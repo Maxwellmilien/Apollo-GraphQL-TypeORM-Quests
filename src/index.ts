@@ -1,7 +1,7 @@
 /** Import des librairies */
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { getOneCartooById } from "./resolvers/cartoon.resolver";
+import { getOneCartoonById } from "./resolvers/cartoon.resolver";
 
 const cartoons = [
   {
@@ -44,7 +44,7 @@ const typeDefs = `#graphql
 const resolvers = {
   Query: {
     getCartoons: () => cartoons,
-    getOneCartooById,
+    getOneCartoonById,
   },
 };
 // The ApolloServer constructor requires two parameters: your schema

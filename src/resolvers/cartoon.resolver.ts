@@ -1,5 +1,5 @@
 import { default as cartoons } from "../../datas/dataset.json";
 
-export function getOneCartooById() {
+export function getOneCartoonById() {
   return cartoons[0];
 }
