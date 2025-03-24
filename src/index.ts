@@ -3,7 +3,7 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { getOneCartoonById, getCartoons } from "./resolvers/cartoon.resolver";
 import { Personnage, PersonnageInput } from "./schemas/personnage.schema";
-import { Cartoon } from "./schemas/cartoon.schema";
+import { Cartoon, CartoonInput } from "./schemas/cartoon.schema";
 
 // A schema is a collection of type definitions (hence "typeDefs")
 const typeDefs = `#graphql
@@ -11,6 +11,7 @@ const typeDefs = `#graphql
   type Cartoon ${Cartoon}
   type Personnage ${Personnage}
   input PersonnageInput ${PersonnageInput}
+  input CartoonInput ${CartoonInput}
 
   # The "Query" type is special: it lists all of the available queries
   type Query {
