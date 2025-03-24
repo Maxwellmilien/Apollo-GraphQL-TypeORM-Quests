@@ -5,6 +5,10 @@ type GetOneCartoonByIdArgs = {
   id: string;
 };
 
+export function getCartoons(_: unknown, _args: unknown): Cartoon[] {
+  return cartoons as Cartoon[];
+}
+
 export function getOneCartoonById(
   _: unknown,
   args: GetOneCartoonByIdArgs,
