@@ -32,3 +32,18 @@ export function createCartoon(
   datas.push(cartoon);
   return "" + cartoon.id;
 }
+
+export function deleteCartoon(
+  _: unknown,
+  args: GetOneCartoonByIdArgs,
+): string | null {
+  const id = args.id;
+  const index = datas.findIndex((d) => `${d.id}` === id);
+
+  if (index !== -1) {
+    datas.splice(index, 1);
+    return id;
+  } else {
+    return null;
+  }
+}

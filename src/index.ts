@@ -5,6 +5,7 @@ import {
   getOneCartoonById,
   getCartoons,
   createCartoon,
+  deleteCartoon,
 } from "./resolvers/cartoon.resolver";
 import { Personnage, PersonnageInput } from "./schemas/personnage.schema";
 import { Cartoon, CartoonInput } from "./schemas/cartoon.schema";
@@ -16,8 +17,10 @@ const typeDefs = `#graphql
   type Personnage ${Personnage}
   input PersonnageInput ${PersonnageInput}
   input CartoonInput ${CartoonInput}
+
   type Mutation {
     createCartoon(cartoon: CartoonInput): ID,
+    deleteCartoon(id: ID!): ID,
   }
 
   # The "Query" type is special: it lists all of the available queries
@@ -35,6 +38,7 @@ const resolvers = {
   },
   Mutation: {
     createCartoon,
+    deleteCartoon,
   },
 };
 // The ApolloServer constructor requires two parameters: your schema
