@@ -15,3 +15,8 @@ export function getOneCartoonById(
 ): Cartoon {
   return cartoons.find((cartoon) => cartoon.id === +args.id) as Cartoon;
 }
+
+export function createCartoon(_: unknown, _args: { cartoon: Cartoon }): number {
+  console.log(_args);
+  return 1234;
+}

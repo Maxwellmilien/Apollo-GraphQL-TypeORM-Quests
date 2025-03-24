@@ -1,7 +1,11 @@
 /** Import des librairies */
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { getOneCartoonById, getCartoons } from "./resolvers/cartoon.resolver";
+import {
+  getOneCartoonById,
+  getCartoons,
+  createCartoon,
+} from "./resolvers/cartoon.resolver";
 import { Personnage, PersonnageInput } from "./schemas/personnage.schema";
 import { Cartoon, CartoonInput } from "./schemas/cartoon.schema";
 
@@ -12,6 +16,9 @@ const typeDefs = `#graphql
   type Personnage ${Personnage}
   input PersonnageInput ${PersonnageInput}
   input CartoonInput ${CartoonInput}
+  type Mutation {
+    createCartoon(cartoon: CartoonInput): ID,
+  }
 
   # The "Query" type is special: it lists all of the available queries
   type Query {
@@ -25,6 +32,9 @@ const resolvers = {
   Query: {
     getCartoons,
     getOneCartoonById,
+  },
+  Mutation: {
+    createCartoon,
   },
 };
 // The ApolloServer constructor requires two parameters: your schema
