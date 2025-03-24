@@ -2,6 +2,7 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { getOneCartoonById, getCartoons } from "./resolvers/cartoon.resolver";
+import { Personnage } from "./schemas/personnage.schema";
 
 // A schema is a collection of type definitions (hence "typeDefs")
 const typeDefs = `#graphql
@@ -11,6 +12,7 @@ const typeDefs = `#graphql
     name: String
     description: String
   }
+  type Personnage ${Personnage}
 
   # The "Query" type is special: it lists all of the available queries
   type Query {
