@@ -1,3 +1,4 @@
+import { Console } from "console";
 import { default as cartoons } from "../../datas/dataset.json";
 import { Cartoon } from "../types/cartoon.type";
 
@@ -16,7 +17,8 @@ export function getOneCartoonById(
   return cartoons.find((cartoon) => cartoon.id === +args.id) as Cartoon;
 }
 
-export function createCartoon(_: unknown, _args: { cartoon: Cartoon }): number {
-  console.log(_args);
-  return 1234;
+export function createCartoon(_: unknown, args: { cartoon: Cartoon }): string {
+  const cartoon: Cartoon = args;
+  console.log(cartoon);
+  return "1234";
 }

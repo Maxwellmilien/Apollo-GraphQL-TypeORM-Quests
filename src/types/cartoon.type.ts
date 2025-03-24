@@ -1,4 +1,4 @@
-export interface Cartoon {
+export type Cartoon = {
   id: number;
   name: string;
   description: string;
@@ -9,11 +9,11 @@ export interface Cartoon {
   author: string;
   ft_diffusion: string;
   personnages: Personnage[];
-}
+};
 
-export interface Personnage {
+export type Personnage = {
   id: number;
   name: string;
   role: string;
   short_description: string;
-}
+};
