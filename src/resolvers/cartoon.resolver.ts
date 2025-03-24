@@ -3,7 +3,7 @@ import { Cartoon } from "../types/cartoon.type";
 
 const datas = [...cartoons];
 
-type GetOneCartoonByIdArgs = {
+type CartoonByIdArgs = {
   id: string;
 };
 
@@ -11,10 +11,7 @@ export function getCartoons(_: unknown, _args: unknown): Cartoon[] {
   return datas as Cartoon[];
 }
 
-export function getOneCartoonById(
-  _: unknown,
-  args: GetOneCartoonByIdArgs,
-): Cartoon {
+export function getOneCartoonById(_: unknown, args: CartoonByIdArgs): Cartoon {
   return datas.find((cartoon) => cartoon.id === +args.id) as Cartoon;
 }
 
@@ -35,7 +32,7 @@ export function createCartoon(
 
 export function deleteCartoon(
   _: unknown,
-  args: GetOneCartoonByIdArgs,
+  args: CartoonByIdArgs,
 ): string | null {
   const id = args.id;
   const index = datas.findIndex((d) => `${d.id}` === id);
