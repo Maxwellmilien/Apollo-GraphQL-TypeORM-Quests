@@ -1,4 +1,5 @@
 /** Import des librairies */
+import "reflect-metadata";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import {
@@ -9,6 +10,7 @@ import {
 } from "./resolvers/cartoon.resolver";
 import { Personnage, PersonnageInput } from "./schemas/personnage.schema";
 import { Cartoon, CartoonInput } from "./schemas/cartoon.schema";
+import { dataSource } from "./services/client.service";
 
 // A schema is a collection of type definitions (hence "typeDefs")
 const typeDefs = `#graphql
@@ -54,5 +56,6 @@ const server = new ApolloServer({
     listen: { port: 4000 },
   });
 
+  await dataSource.initialize();
   console.log(`🚀  Server ready at: ${url}`);
 })();
