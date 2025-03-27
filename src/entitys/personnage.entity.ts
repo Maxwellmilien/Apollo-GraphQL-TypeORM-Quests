@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { CartoonEntity } from "./cartoon.entity";
 
 @Entity()
 export class PersonnageEntity {
@@ -13,4 +14,7 @@ export class PersonnageEntity {
 
   @Column()
   short_description: string;
+
+  @ManyToOne(() => CartoonEntity, (cartoon) => cartoon.personnages)
+  cartoon: CartoonEntity;
 }

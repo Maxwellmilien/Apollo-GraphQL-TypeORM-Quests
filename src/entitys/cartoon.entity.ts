@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { GenreEntity } from "./genre.entity";
+import { PersonnageEntity } from "./personnage.entity";
 
 @Entity()
 export class CartoonEntity {
@@ -29,4 +30,7 @@ export class CartoonEntity {
 
   @OneToMany(() => GenreEntity, (genre) => genre.cartoon)
   genres?: GenreEntity[];
+
+  @OneToMany(() => PersonnageEntity, (personnage) => personnage.cartoon)
+  personnages?: PersonnageEntity[];
 }
