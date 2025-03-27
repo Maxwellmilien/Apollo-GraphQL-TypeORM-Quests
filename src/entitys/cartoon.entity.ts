@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { GenreEntity } from "./genre.entity";
 
 @Entity()
@@ -27,6 +27,6 @@ export class CartoonEntity {
   @Column()
   ft_diffusion: string;
 
-  @Column()
+  @OneToMany(() => GenreEntity, (genre) => genre.cartoon)
   genres?: GenreEntity[];
 }
