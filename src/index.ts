@@ -3,55 +3,25 @@ import "reflect-metadata";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import CartoonResolvers from "./resolvers/cartoon.resolver";
-import { Personnage, PersonnageInput } from "./schemas/personnage.schema";
-import { Cartoon, CartoonInput } from "./schemas/cartoon.schema";
 import { dataSource } from "./services/client.service";
+import { buildSchema } from "type-graphql";
 
-const cartoonResolvers = new CartoonResolvers();
-// A schema is a collection of type definitions (hence "typeDefs")
-const typeDefs = `#graphql
-  # This "Cartoon" type defines the queryable fields for every cartoon in our data source.
-  type Cartoon ${Cartoon}
-  type Personnage ${Personnage}
-  input PersonnageInput ${PersonnageInput}
-  input CartoonInput ${CartoonInput}
+// const cartoonResolvers = new CartoonResolvers();
 
-  type Mutation {
-    createCartoon(cartoon: CartoonInput): ID,
-    deleteCartoon(id: ID!): ID,
-  }
-
-  # The "Query" type is special: it lists all of the available queries
-  type Query {
-    getCartoons: [Cartoon],
-    getOneCartoonById(id: ID!): Cartoon,
-  }
-`;
-
-// This resolver retrieves books from the "books" array above.
-const resolvers = {
-  Query: {
-    getCartoons: cartoonResolvers.getCartoons,
-    getOneCartoonById: cartoonResolvers.getOneCartoonById,
-  },
-  Mutation: {
-    createCartoon: cartoonResolvers.createCartoon,
-    deleteCartoon: cartoonResolvers.deleteCartoon,
-  },
-};
-// The ApolloServer constructor requires two parameters: your schema
-// definition and your set of resolvers.
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-});
-
-/** Fonction auto appellée (évite la mise en constante) permettant de lancer le serveur */
 (async () => {
+  await dataSource.initialize();
+
+  const schema = await buildSchema({
+    resolvers: [CartoonResolvers],
+  });
+
+  const server = new ApolloServer({
+    schema,
+  });
+
   const { url } = await startStandaloneServer(server, {
     listen: { port: 4000 },
   });
 
-  await dataSource.initialize();
   console.log(`🚀  Server ready at: ${url}`);
 })();

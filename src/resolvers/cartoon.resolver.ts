@@ -1,52 +1,70 @@
-import { Cartoon } from "../types/cartoon.type";
 import { CartoonEntity } from "../entitys/cartoon.entity";
 import { PersonnageEntity } from "../entitys/personnage.entity";
 import { GenreEntity } from "../entitys/genre.entity";
+import { Field, InputType, Mutation, Query, Resolver, Arg } from "type-graphql";
 
-type CartoonByIdArgs = {
-  id: string;
-};
+@InputType()
+export class GenreInput {
+  @Field()
+  name: string;
+}
 
+@InputType()
+export class PersonnageInput {
+  @Field()
+  name: string;
+  @Field()
+  role: string;
+  @Field()
+  short_description: string;
+}
+
+@InputType()
+export class CartoonInput {
+  @Field()
+  name: string;
+  @Field()
+  description: string;
+  @Field()
+  nb_of_episodes: number;
+  @Field()
+  nb_of_seasons: number;
+  @Field(() => [GenreInput])
+  genres: [GenreInput];
+  @Field()
+  realisator: string;
+  @Field()
+  author: string;
+  @Field()
+  ft_diffusion: string;
+  @Field(() => [PersonnageInput])
+  personnages: [PersonnageInput];
+}
+
+@Resolver(CartoonEntity)
 class CartoonResolvers {
-  async getCartoons(_: unknown, _args: unknown): Promise<Cartoon[]> {
+  @Query(() => [CartoonEntity])
+  async getCartoons(): Promise<CartoonEntity[]> {
     const result = (await CartoonEntity.find({
       relations: ["genres", "personnages"],
     })) as CartoonEntity[];
 
-    const cartoons = result.reduce((acc, entity) => {
-      const { personnages, genres, ...other } = entity;
-      acc.push({
-        genres: genres?.map((g) => g.name) || [],
-        personnages: personnages?.map(({ cartoon, ...rest }) => rest) || [],
-        ...other,
-      } as Cartoon);
-      return acc;
-    }, [] as Cartoon[]);
-
-    return cartoons;
+    return result;
   }
 
-  async getOneCartoonById(_: unknown, args: CartoonByIdArgs): Promise<Cartoon> {
+  @Query(() => CartoonEntity)
+  async getOneCartoonById(@Arg("id") id: string): Promise<CartoonEntity> {
     const result = (await CartoonEntity.findOne({
-      where: { id: +args.id },
+      where: { id: +id },
       relations: ["genres", "personnages"],
     })) as CartoonEntity;
 
-    const { personnages, genres, ...other } = result;
-
-    const new_cartoon = {
-      genres: genres?.map((g) => g.name) || [],
-      personnages: personnages?.map(({ cartoon, ...rest }) => rest) || [],
-      ...other,
-    } as Cartoon;
-
-    return new_cartoon;
+    return result;
   }
-  async createCartoon(
-    _: unknown,
-    args: { cartoon: Omit<Cartoon, "id"> },
-  ): Promise<String> {
-    const { personnages, genres, ...rest } = args.cartoon;
+
+  @Mutation(() => String)
+  async createCartoon(@Arg("cartoon") cartoon: CartoonInput): Promise<String> {
+    const { personnages, genres, ...rest } = cartoon;
 
     const new_personnages = personnages?.map((per) => {
       const p = new PersonnageEntity();
@@ -58,39 +76,45 @@ class CartoonResolvers {
 
     const new_genres = genres?.map((g) => {
       const data = new GenreEntity();
-      data.name = g;
+      data.name = g.name;
       return data;
     });
 
-    const cartoon = new CartoonEntity();
-    Object.assign(cartoon, rest);
-    cartoon.personnages = new_personnages;
-    cartoon.genres = new_genres;
+    const new_cartoon = new CartoonEntity();
+    Object.assign(new_cartoon, rest);
+    new_cartoon.personnages = new_personnages;
+    new_cartoon.genres = new_genres;
 
-    const result = await cartoon.save();
+    const result = await new_cartoon.save();
 
     return "" + result.id;
   }
 
-  async deleteCartoon(
-    _: unknown,
-    args: CartoonByIdArgs,
-  ): Promise<string | null> {
+  @Mutation(() => String)
+  async deleteCartoon(@Arg("id") id: string): Promise<string> {
     // Find the cartoon by ID
     const cartoon = await CartoonEntity.findOne({
-      where: { id: +args.id },
+      where: { id: +id },
       relations: ["genres", "personnages"],
     });
 
-    if (cartoon !== null) {
-      const { genres, personnages, ...r } = cartoon;
-      r;
-      genres?.forEach((g) => CartoonEntity.delete(g));
-      personnages?.forEach((p) => CartoonEntity.delete(p));
+    if (!cartoon) {
+      throw new Error(`Cartoon with id ${id} not found`);
     }
 
-    cartoon?.remove();
-    return "ok";
+    // Delete associated genres and personnages
+    if (cartoon.personnages && cartoon.personnages.length > 0) {
+      await PersonnageEntity.remove(cartoon.personnages);
+    }
+
+    if (cartoon.genres && cartoon.genres.length > 0) {
+      await GenreEntity.remove(cartoon.genres);
+    }
+
+    // Delete the cartoon itself
+    await CartoonEntity.remove(cartoon);
+
+    return "Cartoon successfully deleted";
   }
 }
 
