@@ -1,9 +1,15 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { GenreEntity } from "./genre.entity";
 import { PersonnageEntity } from "./personnage.entity";
 
 @Entity()
-export class CartoonEntity {
+export class CartoonEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -20,7 +26,7 @@ export class CartoonEntity {
   nb_of_seasons: number;
 
   @Column()
-  realisation: string;
+  realisator: string;
 
   @Column()
   author: string;
@@ -28,9 +34,13 @@ export class CartoonEntity {
   @Column()
   ft_diffusion: string;
 
-  @OneToMany(() => GenreEntity, (genre) => genre.cartoon)
+  @OneToMany(() => GenreEntity, (genre) => genre.cartoon, {
+    cascade: true,
+  })
   genres?: GenreEntity[];
 
-  @OneToMany(() => PersonnageEntity, (personnage) => personnage.cartoon)
+  @OneToMany(() => PersonnageEntity, (personnage) => personnage.cartoon, {
+    cascade: true,
+  })
   personnages?: PersonnageEntity[];
 }

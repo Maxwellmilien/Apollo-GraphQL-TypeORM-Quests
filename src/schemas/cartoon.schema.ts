@@ -3,7 +3,7 @@ export const Cartoon = `{
   name: String
   description: String
   nb_of_episodes: Int
-  nb_of_szasons: Int
+  nb_of_seasons: Int
   genres: [String]
   realisator: String
   author: String
@@ -15,7 +15,7 @@ export const CartoonInput = `{
   name: String
   description: String
   nb_of_episodes: Int
-  nb_of_szasons: Int
+  nb_of_seasons: Int
   genres: [String]
   realisator: String
   author: String
