@@ -2,16 +2,12 @@
 import "reflect-metadata";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import {
-  getOneCartoonById,
-  getCartoons,
-  createCartoon,
-  deleteCartoon,
-} from "./resolvers/cartoon.resolver";
+import CartoonResolvers from "./resolvers/cartoon.resolver";
 import { Personnage, PersonnageInput } from "./schemas/personnage.schema";
 import { Cartoon, CartoonInput } from "./schemas/cartoon.schema";
 import { dataSource } from "./services/client.service";
 
+const cartoonResolvers = new CartoonResolvers();
 // A schema is a collection of type definitions (hence "typeDefs")
 const typeDefs = `#graphql
   # This "Cartoon" type defines the queryable fields for every cartoon in our data source.
@@ -35,12 +31,12 @@ const typeDefs = `#graphql
 // This resolver retrieves books from the "books" array above.
 const resolvers = {
   Query: {
-    getCartoons,
-    getOneCartoonById,
+    getCartoons: cartoonResolvers.getCartoons,
+    getOneCartoonById: cartoonResolvers.getOneCartoonById,
   },
   Mutation: {
-    createCartoon,
-    deleteCartoon,
+    createCartoon: cartoonResolvers.createCartoon,
+    deleteCartoon: cartoonResolvers.deleteCartoon,
   },
 };
 // The ApolloServer constructor requires two parameters: your schema
